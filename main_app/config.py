@@ -1,9 +1,8 @@
 #!/usr/bin/python
 from configparser import ConfigParser
 import psycopg2
-from config import config 
  
-def config(filename='database.ini', section='postgresql'):
+def config(filename='config.ini', section='postgresql'):
     # create a parser
     parser = ConfigParser()
     # read config file
