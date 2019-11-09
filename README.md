@@ -1,4 +1,4 @@
-# DBMS Project Descriptions:
+# DBMS Project Description:
 You are expected to develop a faculty portal for an academic university. For this project, you are expected
 to develop code for both the front-end UI and the back-end of the system. Given that this course focuses
 on topics related to databases systems, we would expect a more thorough effort on the database part of
