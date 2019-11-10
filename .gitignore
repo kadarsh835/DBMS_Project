@@ -2,4 +2,8 @@
 **/*.pyc
 **/*.pyo
 Question
+<<<<<<< HEAD
 config.ini
+=======
+config.ini 
+>>>>>>> 9c7bece71f2ffbf2209a58daaee51446bdaffdb7
