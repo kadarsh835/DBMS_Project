@@ -2,8 +2,10 @@ from flask import Flask, session, render_template
 import os
 
 from storage.postgresHelper import PostgresDBHelper
+from storage.mongoHelper import MongoDBHelper
 
-db = PostgresDBHelper()
+postgres_db = PostgresDBHelper()
+mongo_db = MongoDBHelper()
 
 app = Flask(__name__)
 
@@ -15,4 +17,3 @@ def hello():
 @app.route('/<name>')
 def hello_name(name):
     return "Hello {}!".format(name)
-
