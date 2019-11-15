@@ -1,13 +1,13 @@
-from flask import Flask, session, render_template ,url_for 
-import os 
-from flask import *   
+from flask import Flask, render_template ,url_for ,session
+from flask import *  
+import os
 from storage.postgresHelper import PostgresDBHelper
 
 db = PostgresDBHelper()
 
-app = Flask(__name__)
+app = Flask(__name__)   
 
-  
+ 
 @app.route('/')
 def home():
   return render_template('home.html')
