@@ -1,15 +1,13 @@
-from flask import Flask, session, render_template ,url_for 
-import os 
-from flask import *   
+from flask import Flask, render_template ,url_for ,session
+from flask import *  
+import os
 from storage.postgresHelper import PostgresDBHelper
-from storage.mongoHelper import MongoDBHelper
 
-postgres_db = PostgresDBHelper()
-mongo_db = MongoDBHelper()
+db = PostgresDBHelper()
 
-app = Flask(__name__)
+app = Flask(__name__)   
 
-  
+ 
 @app.route('/')
 def home():
   return render_template('home.html')
@@ -50,6 +48,7 @@ def login():
 
       #redirect(url_for())
 
-@app.route('/<name>')
-def hello_name(name):
-    return "Hello {}!".format(name)
+
+ 
+if __name__ == '__main__':
+  app.run(debug=True)
