@@ -32,14 +32,16 @@ class PostgresDBHelper:
             cur.close()
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
-    
-    def createEmployee(self, username, name, email, password):
-        cur = self.conn.cursor()
 
-        err = False        
+    def insertDepartment(self, id, name):
+        cur = self.conn.cursor()
+        err = False
         try:
-            cur.execute('INSERT INTO employee(username, name, email, passwd) VALUES (%s, %s, %s, %s)',
-                            (username, name, email, password,))
+            cur.execute(
+                '''INSERT INTO department(name) 
+                    VALUES (%s)''',
+                        (name,)
+            )
         except:
             err = True
 
@@ -47,4 +49,62 @@ class PostgresDBHelper:
         self.conn.commit()
         return err
     
-                
+    def insertEmployee(self, username, first_name, last_name, email, password, start_date, end_date, dept):
+        cur = self.conn.cursor()
+        err = False        
+        try:
+            cur.execute('''INSERT INTO employee(user_name, first_name, last_name, email, passwd, start_date, end_date, dept) 
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %d)''',
+                        (username, first_name, last_name, email, password, start_date, end_date, dept,))
+        except:
+            err = True
+
+        cur.close()
+        self.conn.commit()
+        return err
+
+    def insertHod(self, hod_id, start_date, end_date, dept):
+        cur = self.conn.cursor()
+        err = False
+        try:
+            cur.execute(
+                '''INSERT INTO hod(hod_id, start_date, end_date, dept) 
+                    VALUES (%d, %s, %s, %d)''',
+                        (hod_id, start_date, end_date, dept)
+            )
+        except:
+            err = True
+
+        cur.close()
+        self.conn.commit()
+        return err
+    
+    def insertCC_faculty(self, cc_id, start_date, end_date, dept):
+        cur = self.conn.cursor()
+        err = False
+        try:
+            curr.execute(
+                '''INSERT INTO cc_faculty(cc_id, start_date, end_date, dept) 
+                    VALUES (%d, %s, %s, %d)''',
+                        (cc_id, start_date, end_date, dept)
+            )
+        except:
+            err = True
+        cur.close()
+        self.conn.commit()
+        return err
+    
+    def inserDirector(self, dir_id, start_date, end_date):
+        cur = self.conn.cursor()
+        err = False
+        try:
+            curr.execute(
+                '''INSERT INTO director(dir_id, start_date, end_date)
+                    VALUES (%d, %s, %s)''',
+                        (dir_id, start_date, end_date)
+            )
+        except:
+            err = True
+        cur.close()
+        self.conn.commit()
+        return err
