@@ -1,12 +1,9 @@
-from flask import Flask, render_template ,url_for ,session
+from flask import Flask, render_template ,url_for
 from flask import *  
 import os
-from storage.postgresHelper import PostgresDBHelper
-
-db = PostgresDBHelper()
-
-app = Flask(__name__)   
-
+app = Flask(__name__)  
+ 
+app = Flask(__name__)      
  
 @app.route('/')
 def home():
@@ -20,14 +17,32 @@ def about():
 def faculty():
   return render_template('faculty.html')
 
+@app.route('/register')
+def register():
+  return render_template('register.html')
+
+@app.route('/log')
+def log():
+  return render_template('log.html')
+
+@app.route('/profile')
+def profile():
+  return render_template('profile.html')
+
 @app.route('/specialised_faculty')
 def specialised_faculty():
   return render_template('specialised_faculty.html')
 
 
-@app.route('/admin')
+@app.route('/admin', methods=['GET', 'POST'])
 def admin():
-      return render_template('admin.html') 
+    error = None
+    if request.method == 'POST':
+        if request.form['username'] != 'admin' or request.form['password'] != 'admin':
+            error = 'Invalid Credentials. Please try again.'
+        else:
+            return render_template('admin.html' , name='success', error = error)
+    return render_template('admin.html', error=error) 
  
 
 @app.route('/user/<uname>')  

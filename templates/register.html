@@ -1,0 +1,50 @@
+
+{% extends "layout.html" %}
+
+{% block content %}    
+    <div class="if-else"> 
+        {% if name =="success"  %}
+            <h2>Suceessfully Registerated </h2> 
+        {% else %}   
+            <div class="container">
+                <h1>Registeration portal  </h1>
+                <br>
+                <form action="" method="post">
+                Firstname : <input type="text" placeholder="Firstname" name="firstname" value="{{
+                    request.form.firstname }}"><br>
+                Lastname : <input type="text" placeholder="lastname" name="lastname" value="{{
+                    request.form.lastname }}"><br>    
+                Password: <input type="password" placeholder="Password" name="password" value="{{
+                    request.form.password }}"> <br>
+                email:  <input type="email" placeholder="Email" name="emailid" value="{{
+                    request.form.email }}"> <br>
+                start_date:  <input type="date" placeholder="start_date" name="start_date" value="{{
+                    request.form.start_date }}"> <br>
+                end_date:  <input type="date" placeholder="end_date" name="end_date" value="{{
+                    request.form.end_date }}">   <br>
+                department:
+                    <select name="department" required>
+                    <option value="cse">Computer Science</option>
+                    <option value="ee">Electrical</option>
+                    <option value="mech">Mechanical</option>
+                    <option value="civil">Civil</option>
+                    <option value="chem">Chemical</option>
+                    <option value="none">NA</option>
+                    </select>     <br>
+                special_position :
+                     <select name="position" required>
+                    <option value="hod">HEAD of Department</option>
+                    <option value="dean">Dean</option>
+                    <option value="none">NA</option> 
+                    </select>     <br> 
+                    <input class="btn btn-default" type="submit" value="Register">
+                </form>
+                {% if error %}
+                    <p class="error"><strong>Error:</strong> {{ error }}
+                {% endif %}
+                </div>  
+        {% endif %}   
+    </div> 
+  
+{% endblock %}
+
