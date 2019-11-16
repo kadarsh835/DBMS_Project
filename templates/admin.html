@@ -1,30 +1,29 @@
-
 {% extends "layout.html" %}
 
-{% block content %}    
-    <div class="if-else"> 
-        {% if name =="success"  %}
-            <h2>Suceessfully logged  in</h2> 
-            <h3><a href ={{url_for('register')}}> new faculty register </a></h3>
-            <h3><a href ={{url_for('log')}}> Delete existing faculty info </a></h3>
-            <h3><a href ={{url_for('log')}}> Log faculty  </a></h3>
-        {% else %}   
-            <div class="container">
-                <h1>Please login as Admin</h1>
-                <br>
-                <form action="" method="post">
-                    <input type="text" placeholder="Username" name="username" value="{{
+{% block content %}
+<div class="if-else">
+    {% if name =="success"  %}
+    <h2>Suceessfully logged in</h2>
+    <h3><a href="/register/employee"> new faculty register </a></h3>
+    <h3><a href="/register/department"> Insert Department </a></h3>
+    <h3><a href={{url_for('log')}}> Delete existing faculty info </a></h3>
+    <h3><a href={{url_for('log')}}> Log faculty </a></h3>
+    {% else %}
+    <div class="container">
+        <h1>Please login as Admin</h1>
+        <br>
+        <form action="" method="post">
+            <input type="text" placeholder="Username" name="username" value="{{
                     request.form.username }}">
-                    <input type="password" placeholder="Password" name="password" value="{{
+            <input type="password" placeholder="Password" name="password" value="{{
                     request.form.password }}">
-                    <input class="btn btn-default" type="submit" value="Login">
-                </form>
-                {% if error %}
-                    <p class="error"><strong>Error:</strong> {{ error }}
-                {% endif %}
-                </div>  
-        {% endif %}   
-    </div> 
-  
-{% endblock %}
+            <input class="btn btn-default" type="submit" value="Login">
+        </form>
+        {% if error %}
+        <p class="error"><strong>Error:</strong> {{ error }}
+            {% endif %}
+    </div>
+    {% endif %}
+</div>
 
+{% endblock %}
