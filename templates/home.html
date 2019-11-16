@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "layout2.html" %}
 {% block content %}
        <!--slogan-->
       <h2  class="margin-top-max">Welcome!</h2>
@@ -8,15 +8,14 @@
         
     <div  class="row">
         <!--box 1-->
-        <div  class="columns five card green offset-by-one" onclick="javascript:location.href='Timetablesubmit/5cs.html'" >
+        <div  class="columns five card green offset-by-one" onclick="javascript:location.href='/admin'" >
           <span  class="fa fa-user"></span> <br>
-          <h5>View other faculties profile</h5>
+          <h5>Admin</h5>
         </div>
         <!--box 2-->
-        <div  class="columns five card red" onclick="javascript:location.href='Timetablecheck/5cs.html'" >
-          <span  class="fa fa-graduation-cap"></span> <a  href="secure/Attendance/view/check.php"></a><br>
-          <h5> 
-               My profile</h5>
+        <div  class="columns five card red" onclick="javascript:location.href='/login'" >
+          <span  class="fa fa-graduation-cap"></span> <a  href={{url_for('login')}} ></a><br>
+          <h5> Faculty </h5>
         </div>
       </div>
     </div>
@@ -27,4 +26,6 @@
       <a  href="{{url_for('about')}}">about</a>
 		</div>
     </center>
+
+ 
 {% endblock %}
