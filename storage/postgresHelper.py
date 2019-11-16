@@ -108,3 +108,16 @@ class PostgresDBHelper:
         cur.close()
         self.conn.commit()
         return err
+
+    # def showLeaveApplicationStatus(self, leavesRemaining, nLeaveApplications, leaveApplicationStatus):
+    #     cur = self.conn.connect()
+    #     err = False
+    #     try:
+    #         cur.execute(
+
+    #         )
+    #     except:
+    #         err = True
+    #     cur.close()
+    #     self.conn.commit()
+    #     return err
