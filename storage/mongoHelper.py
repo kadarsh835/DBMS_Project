@@ -13,7 +13,7 @@ class MongoDBHelper:
         serverStatusResult = db.command("serverStatus")
         pprint(serverStatusResult)
     
-    def insertFacultyInfo(self, emp_id, about_faculty, research_interests, publications, grants, 
+    def updateCV(self, emp_id, about_faculty, research_interests, publications, grants, 
                                     awards, teaching_experience):
         db = self.client.faculty
         document = {
@@ -25,10 +25,15 @@ class MongoDBHelper:
             'awards' : awards,
             'teaching_experience' : teaching_experience,
         }
+        pprint(document)
         error = False
         try:
+            print('Trying to insert')
             insertion_id = db.faculty_info.insert_one(document)
+            print('insertion Successful')
             return insertion_id
-        except:
+        except Exception as e:
             error = True
+            print(e)
+            print('Error in inserting')
             return error
