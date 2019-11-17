@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "layout2.html" %}
 {% block content %}
 
 {% if name == "default" %}
@@ -24,31 +24,31 @@
       <tbody>
         <tr>
           <th scope="row">E-Mail ID</th>
-          <td>emp_details[4]</td>
+          <td> {{emp_details[4]}} </td>
         </tr>
         <tr>
           <th scope="row">About Me</th>
-          <td>result["about_faculty"]</td>
+          <td> {{result['about_faculty']}} </td>
         </tr>
         <tr>
           <th scope="row">My Research Interests</th>
-          <td>result["research_interests"]</td>
+          <td> {{result["research_interests"]}} </td>
         </tr>
         <tr>
           <th scope="row">Publications</th>
-          <td>result["publications"]</td>
+          <td> {{result["publications"]}} </td>
         </tr>
         <tr>
           <th scope="row">Grants</th>
-          <td>result["grants"]</td>
+          <td> {{result["grants"]}} </td>
         </tr>
         <tr>
           <th scope="row">Awards</th>
-          <td>result["awards"]</td>
+          <td> {{result["awards"]}} </td>
         </tr>
         <tr>
           <th scope="row">Teaching Experience</th>
-          <td>result["teaching_experience"]</td>
+          <td> {{result["teaching_experience"]}} </td>
         </tr>
       </tbody>
     </table>
@@ -56,7 +56,7 @@
 </div>
 
 
-<!-- <h5><a href= '//'> Edit profile</a></h5> edit link -->
+<h5><a href= "{{update_cv_url}}"> Edit profile</a></h5>
 
 <center>
   <h5> Apply for leave below:</h5> <br>

@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "layout2.html" %}
 
 {% block content %}
 <div class="if-else">
@@ -8,7 +8,7 @@
 	<div class="container">
 		<h1>Update CV</h1>
 		<br>
-		<form action="{{ url_for('updateCV') }}" method="post">
+		<form action="{{update_employee_cv_url}}" method="post">
 			About : <input type="text" placeholder="About" name="about_faculty" value="{{
 							request.form.about_faculty }}"><br>
 			Your Research Interests : <input type="text" placeholder="Research Interests" name="research_interests"

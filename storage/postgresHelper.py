@@ -1,4 +1,6 @@
 import psycopg2
+import time
+from datetime import datetime
 import os
 
 class PostgresDBHelper:
@@ -75,7 +77,7 @@ class PostgresDBHelper:
         try:
             cur.execute(
                 '''INSERT INTO hod(hod_id, start_date, end_date, dept) 
-                    VALUES (%d, %s, %s, %d)''',
+                    VALUES (%d, %s, %s, %s)''',
                         (hod_id, start_date, end_date, dept)
             )
         except Exception as e:
@@ -92,7 +94,7 @@ class PostgresDBHelper:
         try:
             cur.execute(
                 '''INSERT INTO cc_faculty(cc_id, start_date, end_date, dept) 
-                    VALUES (%d, %s, %s, %d)''',
+                    VALUES (%d, %s, %s, %s)''',
                         (cc_id, start_date, end_date, dept)
             )
         except Exception as e:
@@ -118,27 +120,20 @@ class PostgresDBHelper:
         self.conn.commit()
         return err
 
-    # def showLeaveApplicationStatus(self, leavesRemaining, nLeaveApplications, leaveApplicationStatus):
-    #     cur = self.conn.connect()
-    #     err = False
-    #     try:
-    #         cur.execute(
-
-    #         )
-    #     except:
-    #         err = True
-    #     cur.close()
-    #     self.conn.commit()
-    #     return err
-
-    def getLoginDetails(self, email):
+    def getLoginDetails(self, email = None, id = None):
         cur = self.conn.cursor()
         result = None
         try:
-            cur.execute(
-                '''SELECT * FROM employee WHERE email = %s''', (email)
-            )
-            result = cur.fetchone()
+            if id is None:
+                cur.execute(
+                    '''SELECT * FROM employee WHERE email = %s''', (email,)
+                )
+                result = cur.fetchone()
+            else:
+                cur.execute(
+                    '''SELECT * FROM employee WHERE emp_id = %s''', (id,)
+                )
+                result = cur.fetchone()
             print(result)
             return result
         except Exception as e:
@@ -146,3 +141,45 @@ class PostgresDBHelper:
             return result
         cur.close()
         self.conn.commit()
+    
+    def update_hod_table(self, department, emp_id):
+        cur = self.conn.cursor()
+        try:
+            current_time = time.time()
+            current_time = datetime.fromtimestamp(current_time)
+            print('Current Time')
+            print(current_time)
+            cur.execute(
+                '''UPDATE hod SET end_date = %s WHERE dept = %s AND end_date is NULL''', ( current_time, department,)
+            )
+            cur.execute(
+                '''INSERT INTO hod(hod_id, start_date, end_date, dept) VALUES (%s, %s, %s, %s)''', (emp_id, 
+                        current_time, None, department)
+            )
+        except Exception as e:
+            print(e)
+        cur.close()
+        self.conn.commit()
+    
+    def update_dean_table(self, department, emp_id):
+        cur = self.conn.cursor()
+        try:
+            current_time = time.time()
+            current_time = datetime.fromtimestamp(current_time)
+            print('Current Time')
+            print(current_time)
+            cur.execute(
+                '''UPDATE cc_faculty SET end_date = %s WHERE dept = %s AND end_date is NULL''', ( current_time, department,)
+            )
+            cur.execute(
+                '''INSERT INTO cc_faculty(hod_id, start_date, end_date, dept) VALUES (%s, %s, %s, %s)''', 
+                        (emp_id, current_time, None, department)
+            )
+        except Exception as e:
+            print(e)
+        cur.close()
+        self.conn.commit()
+    
+    # def getHighestHeirarchy(self, emp_id):
+    #     cur = self.con.cursor()
+    #     try:

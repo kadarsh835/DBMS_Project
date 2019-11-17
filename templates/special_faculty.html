@@ -1,47 +1,46 @@
-{% extends "layout2.html" %} 
-{% block content %} 
+{% extends "layout2.html" %}
+{% block content %}
 <div class="if-else">
 
-    {% if name =="success" %} 
-    <h2>SuceeTrssfully Alloted Position </h2> 
+    {% if name =="success" %}
+    <h2>SuceeTrssfully Alloted Position </h2>
     {% endif %}
 
-    {% if name =="view" %} 
-    <h2> view special faculties </h2> 
+    {% if name =="view" %}
+    <h2> view special faculties </h2>
     {% endif %}
 
     {% if name == "register" %}
-    
+
     <h3> Choose post of faculty to assign</h3>
     <h5><a href="/special_faculty/section1"> Head of Department </a></h5>
-    <h5><a href="/special_faculty/section2">  Dean</a></h5>
+    <h5><a href="/special_faculty/section2"> Dean</a></h5>
     {% endif %}
 
 
 
-    {% if name == "section1" %} 
+    {% if name == "section1" %}
 
     <h3> Choose post of faculty to assign</h3>
     <h5><a href="/special_faculty/section1"> Head of Department </a></h5>
-    <h5><a href="/special_faculty/section2">  Dean</a></h5> <br>
-    
+    <h5><a href="/special_faculty/section2"> Dean</a></h5> <br>
+
     <div class="container">
-        <h1>Assign HODs</h1>
-        <br>
+        <h1>Assign HODs</h1><br>
+
         <form action="{{ url_for('update_hod') }}" method="post">
-        Department: 			
+            Department:
             <select name="department" required>
-            <option value="cse">Computer Science</option>
-            <option value="ee">Electrical</option>
-            <option value="mech">Mechanical</option>
-            <option value="civil">Civil</option>
-            <option value="chem">Chemical</option>
-            <option value="none">NA</option>
-        </select> <br>
-        Employee id: <input type="text" placeholder="Id" name="id" value="{{
+                <option value="cse">Computer Science</option>
+                <option value="ee">Electrical</option>
+                <option value="mech">Mechanical</option>
+                <option value="civil">Civil</option>
+                <option value="chem">Chemical</option>
+                <option value="none">NA</option>
+            </select> <br>
+            Employee id: <input type="text" placeholder="Id" name="id" value="{{
                     request.form.id }}"><br>
-        Employee first name : <input type="text" placeholder="Firstname" name="firstname" value="{{
-                    request.form.firstname }}"><br> 
+            <input class="btn btn-default" type="submit" value="Submit">
         </form>
     </div>
     {% endif %}
@@ -50,26 +49,28 @@
 
     {% if name == "section2" %}
 
-        <h3> Choose post of faculty to assign</h3>
-        <h5><a href="/special_faculty/section1"> Head of Department </a></h5>
-        <h5><a href="/special_faculty/section2">  Dean</a></h5> <br>
-        
-        <div class="container">
-            <h1>Assign Deans</h1>
-            <br>
-            <form action="{{ url_for('update_dean') }}" method="post">
-            Section of Dean: 			
-                <select name="section" required>
+    <h3> Choose post of faculty to assign</h3>
+    <h5><a href="/special_faculty/section1"> Head of Department </a></h5>
+    <h5><a href="/special_faculty/section2"> Dean</a></h5> <br>
+
+    <div class="container">
+        <h1>Assign Deans</h1>
+        <br>
+
+        <form action="{{ url_for('update_dean') }}" method="post">
+            Section of Dean:
+            <select name="section" required>
                 <option value="student_affairs">Student Affairs</option>
-                <option value="academic">Academic</option> 
+                <option value="academic">Academic</option>
                 <option value="none">NA</option>
             </select> <br>
             Employee id: <input type="text" placeholder="Id" name="id" value="{{
                         request.form.id }}"><br>
             Employee first name : <input type="text" placeholder="Firstname" name="firstname" value="{{
-                        request.form.firstname }}"><br> 
-            </form>
-        </div>
+                        request.form.firstname }}"><br>
+            <input class="btn btn-default" type="submit" value="Submit">
+        </form>
+    </div>
     {% endif %}
 
 </div>

@@ -55,3 +55,12 @@ CREATE TABLE director(
         REFERENCES employee(emp_id) MATCH SIMPLE
         ON UPDATE NO ACTION ON DELETE NO ACTION
 );
+
+CREATE TABLE leave(
+    application_no SERIAL PRIMARY KEY,
+    fac_id INT NOT NULL,
+    hod_state INT,
+    dean_state INT,
+    director_state INT,
+    final_state INT
+);
