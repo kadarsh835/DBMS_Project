@@ -1,25 +1,76 @@
 {% extends "layout.html" %}
-{% block content %}  
+{% block content %}
 
 {% if name == "default" %}
 <h4> Faculties List with link to their portal</h4>
 
 {% endif %}
 
+<!--show resume-->
+
+{%if name == "show_cv" %}
+
+<h4> Hi {{emp_details[2]}}</h4>
+
+<div class="container">
+  <div class="row">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Section</th>
+          <th scope="col">Details</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">E-Mail ID</th>
+          <td>emp_details[4]</td>
+        </tr>
+        <tr>
+          <th scope="row">About Me</th>
+          <td>result["about_faculty"]</td>
+        </tr>
+        <tr>
+          <th scope="row">My Research Interests</th>
+          <td>result["research_interests"]</td>
+        </tr>
+        <tr>
+          <th scope="row">Publications</th>
+          <td>result["publications"]</td>
+        </tr>
+        <tr>
+          <th scope="row">Grants</th>
+          <td>result["grants"]</td>
+        </tr>
+        <tr>
+          <th scope="row">Awards</th>
+          <td>result["awards"]</td>
+        </tr>
+        <tr>
+          <th scope="row">Teaching Experience</th>
+          <td>result["teaching_experience"]</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<!-- edit link -->
 
 <center>
   <h5> Apply for leave below:</h5> <br>
-  <!-- show remaining leave time--> 
+  <!-- show remaining leave time-->
   remaining time:
 
   <form action="{{ url_for('apply_leave') }}" method="post">
-    id : <input type="hidden" name= "id" value ="{{name}}" />
+    id : <input type="hidden" name="id" value="{{emp_details[0]}}" />
 
     number of days for leave : <input type="number" placeholder="Number of Days" name="days" value="{{
                           request.form.days }}"><br>
-  </form>   
+  </form>
 </center>
 
+{% endif %}
 
-</div>
 {% endblock %}

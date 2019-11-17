@@ -37,3 +37,9 @@ class MongoDBHelper:
             print(e)
             print('Error in inserting')
             return error
+    
+    def getCV(self, emp_id):
+        db = self.client.faculty
+        faculty_info = db.faculty_info
+        cv = faculty_info.find(emp_id = emp_id)
+        return cv

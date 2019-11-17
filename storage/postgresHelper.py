@@ -130,3 +130,19 @@ class PostgresDBHelper:
     #     cur.close()
     #     self.conn.commit()
     #     return err
+
+    def getLoginDetails(self, email):
+        cur = self.conn.cursor()
+        result = None
+        try:
+            cur.execute(
+                '''SELECT * FROM employee WHERE email = %s''', (email)
+            )
+            result = cur.fetchone()
+            print(result)
+            return result
+        except Exception as e:
+            print(e)
+            return result
+        cur.close()
+        self.conn.commit()

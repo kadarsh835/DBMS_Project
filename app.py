@@ -68,13 +68,18 @@ def user(uname):
 # Route for handling the login page logic
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    error = None
-    if request.method == 'POST':
-        if request.form['username'] != 'admin' or request.form['password'] != 'admin':
-            error = 'Invalid Credentials. Please try again.'
-        else:
-            return render_template('login.html' , name='success', error = error)
-    return render_template('login.html', error=error)
+	error = None
+	if request.method == 'POST':
+		result = postgres_db.getLoginDetails(request.form['email'])
+
+		if result[4] == None:	#result[4] is e-mail
+			return render_template('show_info.html', message = "Please ask Admin to register you as a faculty.")
+		else:
+			if result[5] == request.form['password']:	#result[5] is Password
+				cv = mongo_db.getCV(result[0])
+				return render_template('faculty.html', name = "show_cv", emp_details = result, result = cv)
+			else:
+				return render_template('show_info.html', message = "Invalid Credentials. Please Login Again.")
 
 @app.route('/registerDepartment', methods = ['GET', 'POST'])
 def registerDepartment():
@@ -111,7 +116,8 @@ def registerEmployee():
 			error = True
 			print(e)
 	if not error:
-		return render_template('register.html' , name='success', name1 = 'employee', error = error)
+		return render_template('show_info.html', message = "Employee Registration Successful")
+		# return render_template('register.html' , name='success', name1 = 'employee', error = error)
 	else:
 		return "Could Not Register. See Terminal for more details"
 
@@ -135,7 +141,7 @@ def updateCV():
 	if not error:
 		return render_template('register.html' , name='success', name1 = None, error = error)
 	else:
-		return "Could Not Update. See Terminal for more details"
+		return render_template('show_info.html', message = "Could Not Update. See Terminal for more details")
 
 
 @app.route('/update_hod', methods = ['GET', 'POST'])
