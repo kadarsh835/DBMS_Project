@@ -3,11 +3,13 @@
 {% block content %}
 <div class="if-else">
     {% if name =="success"  %}
+
     <h2>Suceessfully logged in</h2>
     <h3><a href="/register/employee"> new faculty register </a></h3>
     <h3><a href="/register/department"> Insert Department </a></h3>
-    <h3><a href={{url_for('log')}}> Delete existing faculty info </a></h3>
+    <h3><a href= '/special_faculty/register'> assign special faculties</a></h3>
     <h3><a href={{url_for('log')}}> Log faculty </a></h3>
+    
     {% else %}
     <div class="container">
         <h1>Please login as Admin</h1>
@@ -21,7 +23,7 @@
         </form>
         {% if error %}
         <p class="error"><strong>Error:</strong> {{ error }}
-            {% endif %}
+        {% endif %}
     </div>
     {% endif %}
 </div>

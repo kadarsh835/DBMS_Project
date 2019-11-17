@@ -18,9 +18,9 @@ def home():
 def about():
   return render_template('about.html')
 
-@app.route('/faculty')
-def faculty():
-  return render_template('faculty.html')
+@app.route('/faculty/<uname>')
+def faculty(uname):
+  return render_template('faculty.html',name=uname)
 
 
 @app.route('/register/<typeOfRegistration>')
@@ -43,9 +43,9 @@ def log():
 def profile():
   return render_template('profile.html')
 
-@app.route('/specialised_faculty')
-def specialised_faculty():
-  return render_template('specialised_faculty.html')
+@app.route('/special_faculty/<section>')
+def special_faculty(section):
+  return render_template('special_faculty.html',name=section)
 
 
 @app.route('/admin', methods=['GET', 'POST'])
@@ -136,3 +136,56 @@ def updateCV():
 		return render_template('register.html' , name='success', name1 = None, error = error)
 	else:
 		return "Could Not Update. See Terminal for more details"
+
+
+@app.route('/update_hod', methods = ['GET', 'POST'])
+def update_hod():
+	error = False
+	if request.method == 'POST':
+		try: 
+			department =  request.form['department']
+			employee_id = request.form['id']
+			firstname =   request.form['firstname']
+			 ##apply database action
+			 
+		except Exception as e:
+			error = True
+			print(e)
+	if not error:
+		return render_template('special_faculty.html' , name='success', error = error)
+	else:
+		return "Could Not Register. See Terminal for more details"
+
+@app.route('/update_dean', methods = ['GET', 'POST'])
+def update_dean():
+	error = False
+	if request.method == 'POST':
+		try: 
+			section =    request.form['section']
+			employee_id = request.form['id']
+			firstname =   request.form['firstname']
+			  ##apply database action
+
+		except Exception as e:
+			error = True
+			print(e)
+	if not error:
+		return render_template('special_faculty.html' , name='success', error = error)
+	else:
+		return "Could Not Register. See Terminal for more details"
+
+@app.route('/apply_leave', methods = ['GET', 'POST'])
+def apply_leave():
+	error = False
+	if request.method == 'POST':
+		try: 
+			  days=    request.form['days'] 
+			  ##apply database action
+
+		except Exception as e:
+			error = True
+			print(e)
+	if not error:
+		return render_template('faculty.html' , name='success', error = error)
+	else:
+		return "Could Not Register. See Terminal for more details"				

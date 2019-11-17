@@ -3,18 +3,6 @@
 {% block content %}
 <div class="if-else">
 
-	{% if name =="success" and name1 == None %}
-
-	<h2>Suceessfully Registerated </h2>
-
-	{% endif %}
-
-	{% if name =="success" and name1 == "department" %}
-
-	<h2>Suceessfully Registerated </h2>
-
-	{% endif %}
-
 	{% if name =="success" and name1 == "employee" %}
 
 	<div class="container">
@@ -43,13 +31,15 @@
 	{% if name == "department" %}
 
 	<div class="container">
-		<h1>Department Registration</h1>
-		<br>
+		<h1>Department Registration</h1> <br>
+
 		<form action="{{ url_for('registerDepartment') }}" method="post">
 			Department Name : <input type="text" placeholder="Department Name" name="dept_name" value="{{
-						request.form.dept_name }}"><br>
+						request.form.dept_name }}"><br> 
 			<input class="btn btn-default" type="submit" value="Register">
+
 		</form>
+
 		{% if error %}
 		<p class="error"><strong>Error:</strong> {{ error }}
 			{% endif %}
@@ -62,7 +52,8 @@
 	<div class="container">
 		<h1>Registeration portal </h1>
 		<br>
-		<form action="{{ url_for('registerEmployee') }}" method="post">
+		<form action="{{ url_for('registerEmployee') }}" method="post"> 
+
 			Firstname : <input type="text" placeholder="Firstname" name="firstname" value="{{
                     request.form.firstname }}"><br>
 			Lastname : <input type="text" placeholder="lastname" name="lastname" value="{{
@@ -75,8 +66,9 @@
                     request.form.start_date }}"> <br>
 			end_date: <input type="date" placeholder="end_date" name="end_date" value="{{
                     request.form.end_date }}"> <br>
-			department:
-			<select name="department" required>
+			
+			department: 			
+				<select name="department" required>
 				<option value="cse">Computer Science</option>
 				<option value="ee">Electrical</option>
 				<option value="mech">Mechanical</option>
@@ -84,18 +76,27 @@
 				<option value="chem">Chemical</option>
 				<option value="none">NA</option>
 			</select> <br>
+
 			<input class="btn btn-default" type="submit" value="Register">
 		</form>
+
 		{% if error %}
 		<p class="error"><strong>Error:</strong> {{ error }}
-			{% endif %}
+		{% endif %}
 	</div>
-
 	{% endif %}
 
-	{% if name == "employee_cv" %}
+	{% if name == "employee_cv" %} 
+	{% endif %}
 
-	{%endif%}
+	{% if name =="success" and name1 == None %} 
+	<h2>Suceessfully Registerated </h2> 
+	{% endif %}
+
+	{% if name =="success" and name1 == "department" %} 
+	<h2>Suceessfully Registerated </h2> 
+	{% endif %}
+
 
 </div>
 

@@ -1,18 +1,25 @@
 {% extends "layout.html" %}
-{% block content %}
+{% block content %}  
 
+{% if name == "default" %}
+<h4> Faculties List with link to their portal</h4>
 
-<!--slogan-->
-<h2 class="margin-top-max">Welcome!</h2>
-<p class="grey"></p>
-<h3>Faculty MANAGEMENT PORTAL </h3>
-<p></p>
+{% endif %}
 
 
 <center>
-  <div style="font-family:verdana;font-size:13px;"><br>
+  <h5> Apply for leave below:</h5> <br>
+  <!-- show remaining leave time--> 
+  remaining time:
 
-    <br>
-    <a href="www.google.com">Designed by Rahul_Dhrub, &amp; Adarsh_Kumar</a>
-  </div>
-  {% endblock %}
+  <form action="{{ url_for('apply_leave') }}" method="post">
+    id : <input type="hidden" name= "id" value ="{{name}}" />
+
+    number of days for leave : <input type="number" placeholder="Number of Days" name="days" value="{{
+                          request.form.days }}"><br>
+  </form>   
+</center>
+
+
+</div>
+{% endblock %}
