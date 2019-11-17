@@ -39,9 +39,7 @@ def register_dep():
 def log():
   return render_template('log.html')
 
-@app.route('/profile')
-def profile():
-  return render_template('profile.html')
+
 
 @app.route('/special_faculty/<section>')
 def special_faculty(section):
@@ -68,6 +66,10 @@ def user(uname):
 # Route for handling the login page logic
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+	 return render_template('login.html')
+
+@app.route('/verify', methods=['GET', 'POST'])
+def verify():
 	error = None
 	if request.method == 'POST':
 		result = postgres_db.getLoginDetails(request.form['email'])
@@ -76,10 +78,17 @@ def login():
 			return render_template('show_info.html', message = "Please ask Admin to register you as a faculty.")
 		else:
 			if result[5] == request.form['password']:	#result[5] is Password
-				cv = mongo_db.getCV(result[0])
-				return render_template('faculty.html', name = "show_cv", emp_details = result, result = cv)
+				url= "/profile/"+ str(result[4])
+				return render_template('login.html',name= "success",profile_url = url)
 			else:
 				return render_template('show_info.html', message = "Invalid Credentials. Please Login Again.")
+
+@app.route('/profile/<uemail>', methods=['GET', 'POST'])
+def profile(uemail):
+		result = postgres_db.getLoginDetails(uemail)
+		cv = mongo_db.getCV(result[0])
+		
+		return render_template('faculty.html', name = "show_cv", emp_details = result, result = cv)
 
 @app.route('/registerDepartment', methods = ['GET', 'POST'])
 def registerDepartment():
