@@ -65,45 +65,109 @@ class MongoDBHelper:
             cv = db.faculty_info.find_one({"emp_id" : str(emp_id)})
         except Exception as e:
             print(e)
+            print("getCv !!")
         return cv
 
     # Leave Application
 
-    # def insertComment(self, application_no, comment_by = None, comment = None):
-    #     db = self.client.faculty
+    def insertComment(self, application_no, comment = '', comment_by = None):
+        db = self.client.faculty
 
-    #     if db.comments.find({"application_no" : application_no}).count() > 0:
-    #         document = db.comments.find_one({"application_no" : application_no})
-    #         if comment_by == 'hod':
-    #             document['hod'] = comment
-    #         elif comment_by == 'dean':
-    #             document['dean'] = comment
-    #         elif comment_by == 'director':
-    #             document['director'] = comment
-    #         else:
-    #             pass
+        if db.comments.find({"application_no" : application_no}).count() > 0:
+            document = db.comments.find_one({"application_no" : application_no})
+            if comment_by == 'hod':
+                document['hod'] = comment
+            elif comment_by == 'dean':
+                document['dean'] = comment
+            elif comment_by == 'director':
+                document['director'] = comment
+            else:
+                document['employee'] = comment
             
-    #         try:
-    #             print('Inserting Document: ')
-    #             pprint(document)
-    #             db.comments.update({"application_no" : application_no},
-    #             {
-    #                 'application_no' : document['application_no'],
-    #                 'hod' : document['hod'],
-    #                 'dean' : document['dean'],
-    #                 'director' : document['director'],
-    #             })
-    #         except Exception as e:
-    #             print(e)
+            try:
+                print('Inserting Document: ')
+                pprint(document)
+                db.comments.update({"application_no" : application_no},
+                {
+                    'application_no' : document['application_no'],
+                    'hod' : document['hod'],
+                    'dean' : document['dean'],
+                    'director' : document['director'],
+                    'employee' : document['employee']
+                })
+            except Exception as e:
+                print(e)
 
-    #     else:
-    #         document = {
-    #             'application_no' : application_no,
-    #             'hod': '',
-    #             'dean': '',
-    #             'director': '',
-    #         }
-    #         try:
-    #             db.comments.insert_one(document)
-    #         except Exception as e:
-    #             print(e)
+        else:
+            document = {
+                'application_no' : application_no,
+                'hod': '',
+                'dean': '',
+                'director': '',
+                'employee' : comment,
+            }
+            try:
+                db.comments.insert_one(document)
+            except Exception as e:
+                print(e)
+    
+    def getComment(self, application_no):
+        db = self.client.faculty
+        print(application_no)
+        comment = None
+        try:
+            comment = db.comments.find_one({'application_no' : application_no })
+        except Exception as e:
+            print(e)
+            print("getComment !!")
+        return comment
+
+    
+    def updateRoutes(self, faculty_route = "dean", hod_route = "dean", dean_route = "director"):
+        db = self.client.faculty
+        try:
+            db.routes.update_one(
+                {'position':'faculty'}, 
+                {
+                    '$set':{
+                        'position':'faculty',
+                        'route':faculty_route,
+                    }
+                },
+                upsert=True
+            )
+            db.routes.update_one(
+                {'position':'hod'}, 
+                {
+                    '$set':{
+                        'position':'hod',
+                        'route':hod_route,
+                    }
+                },
+                upsert=True
+            )
+            db.routes.update_one(
+                {'position':'dean'}, 
+                {
+                    '$set':{
+                        'position':'dean',
+                        'route':dean_route,
+                    }
+                },
+                upsert=True
+            )
+        except Exception as e:
+            print(e)
+
+    def getRoute(self, position):
+        db = self.client.faculty
+        print(position)
+        try:
+            if db.routes.find({'position' : position}).count() > 0:
+                print("FOUND")
+                document = db.routes.find_one({'position' : position})
+                print(document)
+                return document['route']
+        except Exception as e:
+            print(e)
+            return None

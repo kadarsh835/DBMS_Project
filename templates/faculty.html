@@ -1,14 +1,81 @@
-{% extends "layout2.html" %}
+{% extends "layout.html" %}
 {% block content %}
 
-{% if name == "default" %}
+{% if name == "show_list"  %}
 <h4> Faculties List with link to their portal</h4>
+  <table border = '1'>
+    <thead>
+      <tr>
+        <th>Faculty id</th> 
+        <th>name of faculty</th>
+        <th>Department</th>
+        <th>view profile </th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for faculty in faculties %}
+        <tr>
+          <td> <a> faculty[0] </a> </td>  
+          <td> <a> faculty[1] </a> </td>  
+          <td> <a> faculty[8] </a> </td>  
+          <td> <a href="/profile/faculty[4]/view"> view </a> </td>  
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endif %}
 
+
+{% if section == "special" %}
+  <h4> {{emp_type}} section</h4>
+  {% if emp_type == 'hod' or emp_type == 'dean' or emp_type == 'director' %}
+    <h5><a href= "/{{emp_type}}/{{emp_details[8]}}"> Process Leave Applications</a></h5><br>
+  {% endif %}
+
+{% endif %}
+
+{% if section == "processCVs" %}
+<div class="container">
+    <div class="row">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Employee ID</th>
+            <th scope="col">Start Date</th>
+            <th scope="col">No. of Days</th>
+            <th scope="col">Assign Status</th>
+            <th scope="col">Comment</th>
+            <th scope="col">Submit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <form action="{{ url_for('updateLeaveStatus') }}" method="post">
+            {% for application in applications %}
+              <tr>
+                <!-- <th scope="row">{{application[1]}}</th> -->
+                <th><input type="hidden" name="id" value="{{application[1]}}" readonly/></th>
+                <td> {{application[2]}} </td>
+                <td> {{application[3]}} </td>
+                <td> <select name="assign_status" required>
+                      <option value="1">Review</option>
+                      <option value="2">Rejected</option>
+                      <option value="3">Approved</option>
+                    </select> </td>
+                <td> <input type="text" placeholder="Add Comment" name="comment" value="{{
+                                  request.form.comment }}"><br> </td>
+                <td> <input class="btn btn-default" type="submit" value="Submit"> </td>
+              </tr>
+            {% endfor %}
+          </form>
+        </tbody>
+      </table>
+    </div>
+  </div>
 {% endif %}
 
 <!--show resume-->
 
-{%if name == "show_cv" %}
+{%if section == "verified" or section == "view"  %}
 
 <h4> Hi {{emp_details[2]}}</h4>
 
@@ -25,6 +92,10 @@
         <tr>
           <th scope="row">E-Mail ID</th>
           <td> {{emp_details[4]}} </td>
+        </tr>
+        <tr>
+            <th scope="row">Department</th>
+            <td> {{emp_details[8]}} </td>
         </tr>
         <tr>
           <th scope="row">About Me</th>
@@ -55,22 +126,69 @@
   </div>
 </div>
 
+{% endif %}
 
-<h5><a href= "{{update_cv_url}}"> Edit profile</a></h5>
+{%if section == "verified" %}
+<h2><a href= "{{update_cv_url}}"> Edit profile</a></h2><br>
 
 <center>
-  <h5> Apply for leave below:</h5> <br>
+  <h2> Apply for leave:</h2> <br>
   <!-- show remaining leave time-->
-  remaining time:
+  Remaining Leaves: {{emp_details[9]}}<br>
+  
+  {% if lastApplication != [] %}
+    Last Leave Application Status : {{lastApplication[9]}}<br>
+      
+    {% if comments != [] and comments['employee']!='' %}
+      Comment By You : {{comments['employee']}}<br>
+    {% endif %}
+    
+    {% if comments != [] and comments['hod']!='' %}
+      Comment By HOD : {{comments['hod']}}<br>
+    {% endif %}
+    
+    {% if comments != [] and comments['dean']!='' %}
+      Comment By Dean : {{comments['dean']}}<br>
+    {% endif %}
+    
+    {% if comments != [] and comments['director']!='' %}
+      Comment By Director : {{comments['director']}}<br>
+    {% endif %}
 
-  <form action="{{ url_for('apply_leave') }}" method="post">
-    id : <input type="hidden" name="id" value="{{emp_details[0]}}" />
+    {% if lastApplication[10] == 0 %}
+      You have been asked to add more comments to your application.<br>
+      <form action="{{ url_for('apply_leave') }}" method="post">
+          <input type="hidden" name="id" value="add_comment" />
+          <input type="hidden" name="emp_id" value="{{lastApplication[1]}}" />
+          <input type="hidden" name="app_no" value="{{lastApplication[0]}}" />
 
-    number of days for leave : <input type="number" placeholder="Number of Days" name="days" value="{{
-                          request.form.days }}"><br>
-  </form>
-</center>
+          Comment: <input type="text" placeholder="Add Comment" name="add_comment" value="{{
+                                  request.form.comment }}"><br>
+          <input class="btn btn-default" type="submit" value="Revised Comment">
+      </form>
+    {% endif %}
+  {% endif %}
 
+  {% if lastApplication == [] or lastApplication[9] != 'PROCESSING' %}
+    {% if lastApplication == [] %}
+      You did not apply for any leave.<br>
+    {% endif %}
+    <form action="{{ url_for('apply_leave') }}" method="post">
+      
+      <input type="hidden" name="id" value="{{emp_details[0]}}" />
+      
+      Start Date: <input type="date" placeholder="start_date" name="start_date" value="{{
+                    request.form.start_date }}"> <br>
+      number of days for leave : <input type="number" placeholder="Number of Days" name="days" value="{{
+                            request.form.days }}"><br>
+      Comment: <input type="text" placeholder="Add Comment" name="comment" value="{{
+                              request.form.comment }}"><br>
+      <input class="btn btn-default" type="submit" value="Apply">
+    </form>
+  {% endif %}
+    
+ </center>
 {% endif %}
+
 
 {% endblock %}

@@ -4,28 +4,52 @@
 <div class="if-else">
     {% if name =="success"  %}
 
-    <h2>Suceessfully logged in</h2>
-    <h3><a href="/register/employee"> new faculty register </a></h3>
-    <h3><a href="/register/department"> Insert Department </a></h3>
-    <h3><a href= '/special_faculty/register'> assign special faculties</a></h3>
-    <h3><a href={{url_for('log')}}> Log faculty </a></h3>
-    
-    {% else %}
-    <div class="container">
-        <h1>Please login as Admin</h1>
-        <br>
-        <form action="" method="post">
-            <input type="text" placeholder="Username" name="username" value="{{
-                    request.form.username }}">
-            <input type="password" placeholder="Password" name="password" value="{{
-                    request.form.password }}">
-            <input class="btn btn-default" type="submit" value="Login">
-        </form>
-        {% if error %}
-        <p class="error"><strong>Error:</strong> {{ error }}
-        {% endif %}
-    </div>
+        <h2>Suceessfully logged in</h2>
+        <h3><a href="/register/employee"> new faculty register </a></h3>
+        <h3><a href="/register/department"> Insert Department </a></h3>
+        <h3><a href= '/special_faculty/register'> assign special faculties</a></h3>
+        <h3><a href= '/update/path'> Change Route for Leave Applications</a></h3>
+        <h3><a href={{url_for('log')}}> Log faculty </a></h3>
     {% endif %}
+    
+    {% if name == "updateRoute" %}
+        <h1>Update Routes for Leave Applications</h1>
+        <br><br>
+        <form action = "/update/route" method="POST">
+            Normal Faculty: <select name="normal_faculty_final_reviewer" required>
+                <option value="hod">HOD</option>
+                <option value="dean">Dean</option>
+                <option value="director">Director</option>
+            </select> <br>
+            HOD: <select name="hod_final_reviewer" required>
+                    <option value="dean">Dean</option>
+                    <option value="director">Director</option>
+                </select> <br>
+            Dean: <select name="dean_final_reviewer" required>
+                    <option value="director">Director</option>
+                </select> <br>
+            <input class="btn btn-default" type="submit" value="Change">
+        </form>
+    {% endif %}
+    
+    {% if name != "updateRoute" and name!="success"  %}
+        <div class="container">
+            <h1>Please login as Admin</h1>
+            <br>
+            <form action="" method="post">
+                <input type="text" placeholder="Username" name="username" value="{{
+                        request.form.username }}">
+                <input type="password" placeholder="Password" name="password" value="{{
+                        request.form.password }}">
+                <input class="btn btn-default" type="submit" value="Login">
+            </form>
+            {% if error %}
+            <p class="error"><strong>Error:</strong> {{ error }}
+            {% endif %}
+        </div>
+    {% endif %}
+
+    
 </div>
 
 {% endblock %}

@@ -13,6 +13,7 @@ CREATE TABLE employee(
     start_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     end_date TIMESTAMP WITHOUT TIME ZONE,
     dept INT NOT NULL,
+    leaves INT DEFAULT 20,
     CONSTRAINT employee_dept_fkey FOREIGN KEY (dept)
         REFERENCES department(id) MATCH SIMPLE
         ON UPDATE NO ACTION ON DELETE NO ACTION
@@ -56,11 +57,24 @@ CREATE TABLE director(
         ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
-CREATE TABLE leave(
+/*
+    state : 0 (WAITING)
+    state : 1 (REVIEW)
+    state : 2 (REJECTED)
+    state : 3 (APPROVED)
+    state : -1 (not on his desk)
+*/
+
+CREATE TABLE leaves(
     application_no SERIAL PRIMARY KEY,
-    fac_id INT NOT NULL,
-    hod_state INT,
-    dean_state INT,
-    director_state INT,
-    final_state INT
+    emp_id INT NOT NULL,
+    start_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    no_of_days INT NOT NULL,
+    hod_state INT DEFAULT -1,
+    dean_state INT DEFAULT -1,
+    director_state INT DEFAULT -1,
+    final_review_by VARCHAR(20),
+    employee_type VARCHAR(30),
+    final_state VARCHAR(20) DEFAULT 'PROCESSING',
+    employee_state INT DEFAULT 3  /* Default, Employee has approved his application*/
 );

@@ -7,6 +7,8 @@ from flask import *
 
 postgres_db = PostgresDBHelper()
 mongo_db = MongoDBHelper()
+mongo_db.updateRoutes()
+
 
 app = Flask(__name__)
 
@@ -20,7 +22,14 @@ def about():
 
 @app.route('/faculty/<uname>')
 def faculty(uname):
-  return render_template('faculty.html',name=uname)
+	if uname == 'show_list':
+		try:
+			faculties = postgres_db.fetchEmployees()
+			return render_template('faculty.html',name=uname, faculties = faculties  )
+		except Exception as e:
+			print(e) 
+	else:
+  		return render_template('faculty.html',name=uname)
 
 
 @app.route('/register/<typeOfRegistration>')
@@ -48,19 +57,73 @@ def special_faculty(section):
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
-    error = None
-    if request.method == 'POST':
-        if request.form['username'] != 'admin' or request.form['password'] != 'admin':
+	error = None
+	if request.method == 'POST':
+		if request.form['username'] != 'admin' or request.form['password'] != 'admin':
 			return render_template('show_info.html', message = 'Invalid Credentials. Please try again.')
-        else:
-            return render_template('admin.html' , name='success', error = error)
-			
-    return render_template('admin.html', error=error)
+		else:
+			return render_template('admin.html' , name='success', error = error)
 
-# Route for handling the login page logic
+	return render_template('admin.html', error=error)
+
+@app.route('/update/<field>', methods = ['GET', 'POST'])
+def generalUpdate(field):
+	error = False
+	if field == 'path':
+		return render_template('admin.html', name = 'updateRoute')
+	if field == 'route':
+		if request.method == 'POST':
+			try:
+				mongo_db.updateRoutes(request.form['normal_faculty_final_reviewer'], 
+					request.form['hod_final_reviewer'], request.form['dean_final_reviewer'])
+			except Exception as e:
+				error = True
+				print(e)
+				return render_template('show_info.html', message = 'Could not update routes. See terminal for more details')
+			if not error:
+				return render_template('show_info.html', message = 'Routes were successfully updated')
+
+
+@app.route('/<field>/<dept>', methods = ['GET', 'POST'])
+def cc_faculty_desks(field, dept):
+	applications = []
+	if field == 'hod':
+		applications = postgres_db.fetchApplications('hod', dept)
+	if field == 'dean':
+		applications = postgres_db.fetchApplications('dean')
+	if field == 'director':
+		applications = postgres_db.fetchApplications('director')
+
+	return render_template('faculty.html', section = "processCVs", applications = applications)
+
+
+
+@app.route('/updateLeaveStatus', methods = ['GET', 'POST'])
+def updateLeaveStatus():
+	if request.method == 'POST':
+		try:
+			assign_status = request.form['assign_status']
+			comment = request.form['comment']
+			emp_id = request.form['id']
+			assign_status = int(assign_status)
+			print('Update Leaves emp_id {}'.format(emp_id))
+			application_no, comment_by = postgres_db.updateLeaveStatus(emp_id, assign_status)
+
+			mongo_db.insertComment(application_no ,comment, comment_by)
+
+			return render_template('show_info.html', emp_id = emp_id, message = '''The leave application has successfuly been
+						updated by you!''')
+		except Exception as e:
+			print(e)
+			return render_template('show_info.html', emp_id = emp_id, message = '''The leave application could not be
+						updated !!!''')
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	 return render_template('login.html' , name="")
+
+
+	 
 
 @app.route('/verify', methods=['GET', 'POST'])
 def verify():
@@ -72,19 +135,30 @@ def verify():
 			return render_template('show_info.html', message = "Please ask Admin to register you as a faculty.")
 		else:
 			if result[5] == request.form['password']:	#result[5] is Password
-				url= "/profile/"+ str(result[4])
-				print(url)
-				return render_template('login.html',name= "success",profile_url = url)
+
+				url= "/profile/"+ str(result[4]) + '/verified'
+				special_url = "/profile/"+ str(result[4]) + "/special"
+				emp_type = postgres_db.getEmployeeType(result[0])
+				
+				return render_template('login.html',name= "success",profile_url = url, 
+					profile_special = special_url, emp_type = emp_type)
 			else:
 				return render_template('show_info.html', message = "Invalid Credentials. Please Login Again.")
 
-@app.route('/profile/<uemail>')
-def profile(uemail):
+
+@app.route('/profile/<uemail>/<section>')
+def profile(uemail,section = ''):
 		result = postgres_db.getLoginDetails(email = uemail)
+		lastApplication = postgres_db.getLastLeaveApplication(result[0])
+		comments = []
+		if lastApplication != []:
+			comments = mongo_db.getComment(lastApplication[0])
 		cv = mongo_db.getCV(result[0])
-		print(cv)
+		emp_type = postgres_db.getEmployeeType(result[0])
+		
 		update_cv_url = '/cv/' + str(result[0])
-		return render_template('faculty.html', name = "show_cv", emp_details = result, result = cv, update_cv_url = update_cv_url)
+		return render_template('faculty.html',   emp_details = result, result = cv, section = section, 
+				update_cv_url = update_cv_url,  lastApplication = lastApplication, emp_type = emp_type, comments = comments )
 
 @app.route('/cv/<emp_id>')
 def cv(emp_id):
@@ -188,6 +262,7 @@ def update_dean():
 				return render_template('show_info.html' , message = "Enter a valid Employee ID")
 			
 			postgres_db.update_dean_table(1, employee_id)
+			# postgres_db.update_dean_table(department, employee_id)
 
 		except Exception as e:
 			error = True
@@ -202,13 +277,40 @@ def apply_leave():
 	error = False
 	if request.method == 'POST':
 		try: 
-			  days=    request.form['days'] 
-			  ##apply database action
-
+			emp_id = request.form['id']
+			if emp_id == 'add_comment':
+				emp_id = request.form['emp_id']
+				app_no = request.form['app_no']
+				comment = request.form['add_comment']
+				mongo_db.insertComment(int(app_no), comment, comment_by='employee')
+				postgres_db.updateLeaveStatus(emp_id, 3)
+				return render_template('show_info.html', message = '''Your Leave Application has been put again 
+						for review by the concerned authorities after updating the comments. 
+						View its status on your profile page.''')
+			start_date = request.form['start_date']
+			days = request.form['days']
+			comment = request.form['comment']
+			##apply database action
+			emp_type = postgres_db.getEmployeeType(emp_id)
+			print('Employee Type: {}'.format(emp_type))
+			final_review_by = mongo_db.getRoute(emp_type)
+			print('Final Review By: {}'.format(final_review_by))
+			if emp_type == 'faculty':
+				postgres_db.applyForLeave(emp_id, start_date, days, final_review_by, emp_type)
+			if emp_type == 'hod':
+				postgres_db.applyForLeave(emp_id, start_date, days, final_review_by, emp_type, hod_state=-1, dean_state= 0)
+			if emp_type == 'dean':
+				postgres_db.applyForLeave(emp_id, start_date, days, final_review_by, emp_type, hod_state=-1, 
+					dean_state = -1, director_state= 0)
+			
+			# status = 10 to get Application_no
+			application_no = postgres_db.updateLeaveStatus(emp_id, 10)
+			mongo_db.insertComment(application_no, comment)
 		except Exception as e:
 			error = True
 			print(e)
 	if not error:
-		return render_template('faculty.html' , name='success', error = error)
+		return render_template('show_info.html', message = '''Your Leave Application has been put 
+				for review by the concerned authorities. View its status on your profile page.''')
 	else:
-		return render_template('show_info.html', message = "Could Not Register. See Terminal for more details")
+		return render_template('show_info.html', message = "Could Not apply for leave. See Terminal for more details")
