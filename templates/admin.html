@@ -2,6 +2,26 @@
 
 {% block content %}
 <div class="if-else">
+
+    {% if name == "update_leaves"  %}
+       <h1>Update Routes for Leave Applications</h1><br><br>
+
+        <form action = "{{url_for('update_max_leave')}}" method="POST">
+        YEAR: <select name="year" required>
+                    <option value="1">Current</option>
+                    <option value="2">Next</option>
+                </select> <br>
+                
+        Employee Id: <input type="number" placeholder="emp_id" name="emp_id" value="{{
+                    request.form.emp_id }}"> <br>     
+
+        Days:  <input type="number" placeholder="days" name="days" value="{{
+                    request.form.days }}"> <br>
+
+        <input class="btn btn-default" type="submit" value="Change">
+        </form>        
+    {% endif %}
+
     {% if name =="success"  %}
 
         <h2>Suceessfully logged in</h2>
@@ -10,6 +30,7 @@
         <h3><a href= '/special_faculty/register'> assign special faculties</a></h3>
         <h3><a href= '/update/path'> Change Route for Leave Applications</a></h3>
         <h3><a href={{url_for('log')}}> Log faculty </a></h3>
+        <h3><a href= '/update/leaves' >  update max leave for emplopyee</a></h3>
     {% endif %}
     
     {% if name == "updateRoute" %}
@@ -32,7 +53,7 @@
         </form>
     {% endif %}
     
-    {% if name != "updateRoute" and name!="success"  %}
+    {% if name != "updateRoute" and name!="success" and name != "update_leaves"   %}
         <div class="container">
             <h1>Please login as Admin</h1>
             <br>

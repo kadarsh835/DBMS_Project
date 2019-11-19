@@ -14,6 +14,7 @@ CREATE TABLE employee(
     end_date TIMESTAMP WITHOUT TIME ZONE,
     dept INT NOT NULL,
     leaves INT DEFAULT 20,
+    next_leaves INT DEFAULT 20,
     CONSTRAINT employee_dept_fkey FOREIGN KEY (dept)
         REFERENCES department(id) MATCH SIMPLE
         ON UPDATE NO ACTION ON DELETE NO ACTION
@@ -76,5 +77,16 @@ CREATE TABLE leaves(
     final_review_by VARCHAR(20),
     employee_type VARCHAR(30),
     final_state VARCHAR(20) DEFAULT 'PROCESSING',
-    employee_state INT DEFAULT 3  /* Default, Employee has approved his application*/
+    employee_state INT DEFAULT 3, /* Default, Employee has approved his application*/
+    borrow_days INT DEFAULT 0   /*no of days borrowing*/
+);
+
+
+CREATE TABLE log(
+    application_no SERIAL PRIMARY KEY,
+    hod_id INT DEFAULT -1,
+    dean_id INT DEFAULT -1,
+    director_id INT DEFAULT -1,
+    final_status VARCHAR(30),
+    closing_TIME TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );

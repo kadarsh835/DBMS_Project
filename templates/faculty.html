@@ -3,6 +3,10 @@
 
 {% if name == "show_list"  %}
 <h4> Faculties List with link to their portal</h4>
+<center>
+<h3>Department Dict</h3>
+<h5> 'Computer Science': 1,  'Electrical' : 2,    'Civil' : 4, 'Mechanical' : 5,  'Chemical' : 6, 
+                    'student_affairs': 7 ,  'academic': 8,  'None' : 9</h5>
   <table border = '1'>
     <thead>
       <tr>
@@ -15,15 +19,16 @@
     <tbody>
       {% for faculty in faculties %}
         <tr>
-          <td> <a> faculty[0] </a> </td>  
-          <td> <a> faculty[1] </a> </td>  
-          <td> <a> faculty[8] </a> </td>  
-          <td> <a href="/profile/faculty[4]/view"> view </a> </td>  
+          <td> <a> {{faculty[0]}} </a> </td>  
+          <td> <a> {{faculty[1]}}</a> </td>  
+          <td> <a> {{faculty[8]}} </a> </td>  
+          <td> <a href= "{{ "/profile/" + faculty[4] +"/view" }}"> view </a> </td>  
         </tr>
       {% endfor %}
     </tbody>
   </table>
 {% endif %}
+</center>
 
 
 {% if section == "special" %}
@@ -37,36 +42,47 @@
 {% if section == "processCVs" %}
 <div class="container">
     <div class="row">
-      <table class="table">
+      <table class="table" border = 1>
         <thead>
           <tr>
-            <th scope="col">Employee ID</th>
-            <th scope="col">Start Date</th>
-            <th scope="col">No. of Days</th>
-            <th scope="col">Assign Status</th>
-            <th scope="col">Comment</th>
-            <th scope="col">Submit</th>
+            <th scope="col"> </th>
+            <th scope="col"> Employee ID </th>
+            <th scope="col"> Start Date </th>
+            <th scope="col"> No. of Days </th>
+            <th scope="col"> Applier Words </th>
+            <th scope="col"> Application Type </th>
+            <th scope="col"> No.of days borrowed <br>
+                          from next year (if any) </th>
+            <th scope="col"> Assign Status </th>
+            <th scope="col"> Comment </th>
+            <th scope="col"> Submit </th>
+
           </tr>
         </thead>
         <tbody>
-          <form action="{{ url_for('updateLeaveStatus') }}" method="post">
             {% for application in applications %}
-              <tr>
-                <!-- <th scope="row">{{application[1]}}</th> -->
-                <th><input type="hidden" name="id" value="{{application[1]}}" readonly/></th>
-                <td> {{application[2]}} </td>
-                <td> {{application[3]}} </td>
-                <td> <select name="assign_status" required>
-                      <option value="1">Review</option>
-                      <option value="2">Rejected</option>
-                      <option value="3">Approved</option>
-                    </select> </td>
-                <td> <input type="text" placeholder="Add Comment" name="comment" value="{{
-                                  request.form.comment }}"><br> </td>
-                <td> <input class="btn btn-default" type="submit" value="Submit"> </td>
-              </tr>
+              <form action="{{ url_for('updateLeaveStatus') }}" method="post">
+                <tr>
+                  <!-- <th scope="row">{{application[1]}}</th> -->
+                  <th><input type="hidden" name="id" value="{{application[1]}}" readonly/></th>
+                  <td>{{application[1]}} </td>
+                  <td> {{application[2]}} </td>
+                  <td> {{application[3]}} </td>
+                  <td> {{comments['employee']}} </td>
+                  
+                  <td> {% if application[11] == 0 %} Single {% else %} Attached Borrowing{% endif %} </td>
+                  <td> {{application[11]}} </td>
+                  <td> <select name="assign_status" required>
+                        <option value="1">Review</option>
+                        <option value="2">Rejected</option>
+                        <option value="3">Approved</option>
+                      </select> </td>
+                  <td> <input type="text" placeholder="Add Comment" name="comment" value="{{
+                                    request.form.comment }}"><br> </td>
+                  <td> <input class="btn btn-default" type="submit" value="Submit"> </td>
+                </tr>
+              </form>
             {% endfor %}
-          </form>
         </tbody>
       </table>
     </div>
@@ -75,7 +91,7 @@
 
 <!--show resume-->
 
-{%if section == "verified" or section == "view"  %}
+{%if section == "verified" or section == "view"   %}
 
 <h4> Hi {{emp_details[2]}}</h4>
 
@@ -128,7 +144,7 @@
 
 {% endif %}
 
-{%if section == "verified" %}
+{% if section == "verified" %}
 <h2><a href= "{{update_cv_url}}"> Edit profile</a></h2><br>
 
 <center>
@@ -170,6 +186,7 @@
   {% endif %}
 
   {% if lastApplication == [] or lastApplication[9] != 'PROCESSING' %}
+
     {% if lastApplication == [] %}
       You did not apply for any leave.<br>
     {% endif %}
@@ -190,5 +207,19 @@
  </center>
 {% endif %}
 
+{% if section == "borrow" %}
+<center>
+   Do you want to apply for borrow leave from next year:
+   Number of days to borrow : {{borrow}} <br>
+   <form action="{{url_for_borrow}}" method="post">
+      choose : 
+            <select name="status" required>
+              <option value="yes">YES</option>
+              <option value="no">NO</option> 
+            </select> </td>
+      <input class="btn btn-default" type="submit" value="Submit">      
+   </form>
+</center>
+{% endif %}
 
 {% endblock %}
