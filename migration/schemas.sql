@@ -83,10 +83,12 @@ CREATE TABLE leaves(
 
 
 CREATE TABLE log(
-    application_no SERIAL PRIMARY KEY,
-    hod_id INT DEFAULT -1,
-    dean_id INT DEFAULT -1,
-    director_id INT DEFAULT -1,
+    application_no INT ,
+    emp_id INT ,
+    hod_id INT  ,
+    dean_id INT ,
+    director_id INT  ,
     final_status VARCHAR(30),
     closing_TIME TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
+    

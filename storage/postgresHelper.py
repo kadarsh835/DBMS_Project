@@ -361,7 +361,8 @@ class PostgresDBHelper:
                 cur.execute(
                         '''UPDATE log SET   final_state = 'REJECTED',borrow_days = 0 WHERE application_no = %s''', (application_no,)
                     )     
-                    
+                
+
             elif status == 3:
                 
                 if application[7] == 'hod' and application[4] == 0:

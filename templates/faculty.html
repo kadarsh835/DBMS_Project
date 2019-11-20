@@ -27,8 +27,9 @@
       {% endfor %}
     </tbody>
   </table>
+  </center>
 {% endif %}
-</center>
+
 
 
 {% if section == "special" %}
@@ -40,6 +41,7 @@
 {% endif %}
 
 {% if section == "processCVs" %}
+<center>
 <div class="container">
     <div class="row">
       <table class="table" border = 1>
@@ -87,6 +89,7 @@
       </table>
     </div>
   </div>
+  </center>
 {% endif %}
 
 <!--show resume-->
@@ -94,7 +97,7 @@
 {%if section == "verified" or section == "view"   %}
 
 <h4> Hi {{emp_details[2]}}</h4>
-
+<center>
 <div class="container">
   <div class="row">
     <table class="table">
@@ -141,7 +144,7 @@
     </table>
   </div>
 </div>
-
+</center>
 {% endif %}
 
 {% if section == "verified" %}
