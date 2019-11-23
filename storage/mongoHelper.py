@@ -70,17 +70,17 @@ class MongoDBHelper:
 
     # Leave Application
 
-    def insertComment(self, application_no, comment = '', comment_by = None):
+    def insertComment(self, application_no, comment = '', comment_by = None, cc_id = None):
         db = self.client.faculty
 
         if db.comments.find({"application_no" : application_no}).count() > 0:
             document = db.comments.find_one({"application_no" : application_no})
             if comment_by == 'hod':
-                document['hod'] = comment
+                document['hod'+'_'+str(cc_id)] = comment
             elif comment_by == 'dean':
-                document['dean'] = comment
+                document['dean'+'_'+str(cc_id)] = comment
             elif comment_by == 'director':
-                document['director'] = comment
+                document['director'+'_'+str(cc_id)] = comment
             else:
                 document['employee'] = comment
             
@@ -88,22 +88,16 @@ class MongoDBHelper:
                 print('Inserting Document: ')
                 pprint(document)
                 db.comments.update({"application_no" : application_no},
-                {
-                    'application_no' : document['application_no'],
-                    'hod' : document['hod'],
-                    'dean' : document['dean'],
-                    'director' : document['director'],
-                    'employee' : document['employee']
-                })
+                    document
+                )
             except Exception as e:
                 print(e)
 
         else:
+            print(application_no)
+            print(comment)
             document = {
                 'application_no' : application_no,
-                'hod': '',
-                'dean': '',
-                'director': '',
                 'employee' : comment,
             }
             try:
@@ -111,8 +105,16 @@ class MongoDBHelper:
             except Exception as e:
                 print(e)
     
-    def getComment(self, application_no):
+    def getComment(self, application_no = -1):
         db = self.client.faculty
+        if application_no == -1:
+            try:
+                comments = db.comments.find()
+                return comments
+            except Exception as e:
+                print(e)
+                print("getComment cant select all")
+                
         print(application_no)
         comment = None
         try:

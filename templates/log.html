@@ -3,8 +3,7 @@
 {% block content %}
 <center>
   <h2>Log</h2>
-  <p>History and detail  </p>
-    <table border = '1'>
+    <!-- <table border = '1'>
     <thead>
       <tr>
         <th>APPLICATION no.</th> 
@@ -29,6 +28,14 @@
         </tr>
       {% endfor %}
     </tbody>
-  </table>
+  </table> -->
+
+  {% for application in logs %}
+    {% for item in application %}
+      {{ item[0] }} : {{ item[1] }}<br>
+    {% endfor %}
+    <br><br>
+  {% endfor %}
+
  </center> 
 {% endblock %}

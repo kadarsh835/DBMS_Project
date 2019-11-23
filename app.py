@@ -47,8 +47,22 @@ def register_dep():
 
 @app.route('/log')
 def log():
-	applications =postgres_db.fetch_log()
-	return render_template('log.html', applications = applications)
+	logs = []
+	applications =mongo_db.getComment()
+	i = -1
+	for application in applications:
+		i = i+1
+		j=-1
+		logs.append([])
+		for item in application.items():
+			logs[i].append([])
+			j=j+1
+			print('An Application: {}'.format(logs[i]))
+			print('An item: {}'.format(logs[i][j]))
+			logs[i][j].append(item[0])
+			logs[i][j].append(item[1])
+			print('{} : {}'.format(item[0],item[1]))
+	return render_template('log.html', logs = logs)
 
 @app.route('/special_faculty/<section>')
 def special_faculty(section):
@@ -122,9 +136,9 @@ def updateLeaveStatus():
 			emp_id = request.form['id']
 			assign_status = int(assign_status)
 			print('Update Leaves emp_id {}'.format(emp_id))
-			application_no, comment_by = postgres_db.updateLeaveStatus(emp_id, assign_status)
+			application_no, comment_by, cc_id = postgres_db.updateLeaveStatus(emp_id, assign_status)
 
-			mongo_db.insertComment(application_no ,comment, comment_by)
+			mongo_db.insertComment(application_no ,comment, comment_by, cc_id)
 
 			return render_template('show_info.html', emp_id = emp_id, message = '''The leave application has successfuly been
 						updated by you!''')

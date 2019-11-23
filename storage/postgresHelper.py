@@ -215,7 +215,6 @@ class PostgresDBHelper:
 
     def getEmployee (self, emp_id):
         cur = self.conn.cursor()
-        employees = []
         try:
             cur.execute('''SELECT * FROM employee where emp_id = %s''',(emp_id,))
             employee = cur.fetchone()
@@ -335,16 +334,43 @@ class PostgresDBHelper:
         application_no = application[0]
 
         if status == 10:
-            return application
+            return application_no
 
-        comment_by = ''    
+        comment_by = ''
+        cc_id = None
+
+        employee_dept = self.getEmployee(emp_id)[8]
+        print('Employee Dept : {}'.format(employee_dept))
 
         if application[4] == 0:
             comment_by = 'hod'
+            hods = self.get_current_cc_faculty(3)
+            print('HODs:')
+            print(hods)
+            for hod in hods:
+                print('This HOD dept:{}'.format(hod[3]))
+                if int(hod[3]) == int(employee_dept) and hod[2] == None:
+                    cc_id = hod[0]
+                    break
+            print('HOD Dept : {}'.format(cc_id))
+
         elif application[5] == 0:
             comment_by = 'dean'
+            deans = self.get_current_cc_faculty(2)
+            for dean in deans:
+                if dean[2] == '':
+                    cc_id = dean[0]
+                    break
+            print('Dean Dept : {}'.format(cc_id))
+
         elif application[6] == 0:
             comment_by = 'director'
+            directors = self.get_current_cc_faculty(1)
+            for director in directors:
+                if director[2] == '':
+                    cc_id = director[0]
+                    break
+
         else:
             comment_by = 'employee'
 
@@ -430,7 +456,7 @@ class PostgresDBHelper:
             print("updateLeaveStatus !!")
         cur.close()
         self.conn.commit()
-        return application[0], comment_by
+        return application[0], comment_by, cc_id
 
                 
 
@@ -555,17 +581,3 @@ class PostgresDBHelper:
             print("update_max_leave !!")   
         cur.close()
         self.conn.commit()
-
-    def fetch_log(self):
-        cur = self.conn.cursor()
-        try:
-            logs = []
-            cur.execute( '''SELECT * FROM log ''')
-            logs = cur.fetchall()
-            return logs
-        except Exception as e:
-            print(e)
-            print("fetch_log !!")
-            return []
-        cur.close()
-        self.conn.commit()    
